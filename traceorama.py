@@ -18,19 +18,14 @@ while 1:
         if event.type == pygame.QUIT: sys.exit()
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                speed = [-1,0]
-            if event.key == pygame.K_RIGHT:
-                speed = [1,0]
-            if event.key == pygame.K_UP:
-                speed = [0,-1]
-            if event.key == pygame.K_DOWN:
-                speed = [0,1]
-
-    if ballrect.left < 0 or ballrect.right > width:
-        speed[0] = 0
-    if ballrect.top < 0 or ballrect.bottom > height:
-        speed[1] = 0
+            if event.key == pygame.K_LEFT and ballrect.left > 0:
+                speed = [-5,0]
+            if event.key == pygame.K_RIGHT and ballrect.right < width:
+                speed = [5,0]
+            if event.key == pygame.K_UP and ballrect.top > 0:
+                speed = [0,-5]
+            if event.key == pygame.K_DOWN and ballrect.bottom < height:
+                speed = [0,5]
 
     ballrect = ballrect.move(speed)
 
