@@ -1,35 +1,29 @@
-import sys, pygame, time
+import sys, pygame, time, os, io
+from pygame.locals import *
 pygame.init()
 
+mouse = pygame.mouse
 
-size = width, height = 320, 240
-
-fill_color = 255, 127, 64
+size = width, height = 960, 720
 
 screen = pygame.display.set_mode(size)
 
-ball = pygame.image.load("/Users/ben/Desktop/ball.gif")
-ballrect = ball.get_rect()
+canvas = screen.copy()
 
+BLACK = pygame.Color(0,0,0)
+WHITE = pygame.Color(255,255,255)
 
-while 1:
-    speed = [0,0]
+fill_color = 255, 127, 64
+
+while True:
     for event in pygame.event.get():
-        if event.type == pygame.QUIT: sys.exit()
+        if event.type == QUIT:
+            pygame.quit()
+            sys.exit()
+    screen.fill(WHITE)
+    pygame.display.update()
 
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT and ballrect.left > 0:
-                speed = [-5,0]
-            if event.key == pygame.K_RIGHT and ballrect.right < width:
-                speed = [5,0]
-            if event.key == pygame.K_UP and ballrect.top > 0:
-                speed = [0,-5]
-            if event.key == pygame.K_DOWN and ballrect.bottom < height:
-                speed = [0,5]
-
-    ballrect = ballrect.move(speed)
-
-
-    screen.fill(fill_color)
-    screen.blit(ball, ballrect)
-    pygame.display.flip()
+# ball = pygame.image.load("/Users/ben/Desktop/ball.gif")
+# ballrect = ball.get_rect()
+#
+#     pygame.display.flip()
