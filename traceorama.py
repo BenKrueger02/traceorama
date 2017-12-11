@@ -1,6 +1,33 @@
 import sys, pygame, time, os, io
 from pygame.locals import *
+from google.cloud import vision
+from google.cloud.vision import types
+
 pygame.init()
+
+def load_image(file_name):
+    with io.open(file_name, 'rb') as image_file:
+        content = image_file.read()
+    return types.Image(content=content)
+
+def construct_fullpath(folder_name, file_name):
+    return os.path.join(os.path.dirname(folder_name), file_name)
+
+def get_labels(client, image):
+    response = client.label_detection(image=image)  ##The magic happens
+    return response.label_annotations
+
+def get_descriptions(labels):
+    return[label.description for label in labels]
+
+def print_descriptions(descriptions):
+    print('label descriptions:')
+    for description in descriptions:
+        print(description)
+
+traceorama_picture_file_name = "traceorama_pictures.jpg"
+client = vision.ImageAnnotatorClient()
+file_name = construct_fullpath('/Users/ben/Downloads/', traceorama_picture_file_name)
 
 pygame.display.set_caption('Traceorama')
 mouse = pygame.mouse
@@ -33,7 +60,16 @@ while not quit_pressed:
         pygame.display.update()
     else:
         break
-pygame.image.save(canvas,'/Users/ben/Desktop/traceorama_picture.jpeg')
+pygame.image.save(canvas, file_name)
+
+image = load_image(file_name)
+
+labels = get_labels(client, image)
+
+descriptions = get_descriptions(labels)
+
+print_descriptions(descriptions)
+
 pygame.quit()
 sys.exit()
 
