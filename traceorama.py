@@ -38,11 +38,13 @@ def flash_image(image_file_name, width, height, screen, delay):
 def score_labels(reference_words, players_words):
     points = 10
     score  = 0
+    correct_words = []
     for ref_word in reference_words:
         if ref_word in players_words:
+            correct_words.append(ref_word)
             score += points
         points -= 1
-    return score
+    return (score, correct_words)
 
 traceorama_picture_file_name = "traceorama_pictures.jpg"
 client = vision.ImageAnnotatorClient()
@@ -98,12 +100,29 @@ labels = get_labels(client, image)
 
 descriptions = get_descriptions(labels)
 
+score, correct_words = score_labels(ref_descriptions, descriptions)
+
 print(" ----- Reference ----- ")
 print_descriptions(ref_descriptions)
 print(" ----- Player ----- ")
 print_descriptions(descriptions)
+print(' ----- Correct Words ----- ')
+print(correct_words)
 
-print("Score: " + str(score_labels(ref_descriptions, descriptions)))
+
+### Display Score
+
+font_file_name = pygame.font.get_default_font()
+default_font = pygame.font.Font(font_file_name, 24)
+
+score_surface = default_font.render("Score: " + str(score), True, BLACK)
+
+screen.fill(WHITE)
+screen.blit(score_surface, (0,0))
+pygame.display.update()
+
+
+time.sleep(10)
 
 pygame.quit()
 sys.exit()
