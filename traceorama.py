@@ -26,14 +26,23 @@ def print_descriptions(descriptions):
     for description in descriptions:
         print(description)
 
-def flash_image(image_file_name, width, height, screen):
+def flash_image(image_file_name, width, height, screen, delay):
     image = pygame.image.load(image_file_name)
     image = pygame.transform.scale(image, (width,height))
     screen.blit(image,(0,0))
     pygame.display.update()
-    time.sleep(3)
+    time.sleep(delay)
     screen.fill(WHITE)
     pygame.display.update()
+
+def score_labels(reference_words, players_words):
+    points = 10
+    score  = 0
+    for ref_word in reference_words:
+        if ref_word in players_words:
+            score += points
+        points -= 1
+    return score
 
 traceorama_picture_file_name = "traceorama_pictures.jpg"
 client = vision.ImageAnnotatorClient()
@@ -53,13 +62,13 @@ WHITE = pygame.Color(255,255,255)
 
 canvas.fill(WHITE)
 
-flash_image('/Users/ben/Desktop/Christmas_Tree_Picture.png', width, height, screen)
-# christmas_tree_image = pygame.image.load('/Users/ben/Desktop/Christmas_Tree_Picture.png')
-#     christmas_tree_image = pygame.transform.scale(christmas_tree_image, (width,height))
-#     screen.blit(christmas_tree_image,(0,0))
-#     pygame.display.update()
-#     time.sleep(3)
-#     canvas.fill(WHITE)
+flash_image('/Users/ben/Desktop/Christmas_Tree_Picture.png', width, height, screen, 3)
+
+ref_image = load_image('/Users/ben/Desktop/Christmas_Tree_Picture.png')
+
+ref_labels = get_labels(client, ref_image)
+
+ref_descriptions = get_descriptions(ref_labels)
 
 canvas.fill(WHITE)
 
@@ -89,7 +98,12 @@ labels = get_labels(client, image)
 
 descriptions = get_descriptions(labels)
 
+print(" ----- Reference ----- ")
+print_descriptions(ref_descriptions)
+print(" ----- Player ----- ")
 print_descriptions(descriptions)
+
+print("Score: " + str(score_labels(ref_descriptions, descriptions)))
 
 pygame.quit()
 sys.exit()
